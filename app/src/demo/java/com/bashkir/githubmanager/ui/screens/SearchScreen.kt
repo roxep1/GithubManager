@@ -9,18 +9,14 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.bashkir.githubmanager.base.navigate
 import com.bashkir.githubmanager.data.GithubManagerViewModel
-import com.bashkir.githubmanager.ui.Screen
 import com.bashkir.githubmanager.ui.components.RepositoryCard
 import com.bashkir.githubmanager.ui.components.RepositoryCardPlaceholder
 import com.bashkir.githubmanager.ui.components.SearchTextField
@@ -32,8 +28,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchScreen(viewModel: GithubManagerViewModel) = Column {
     val searchText = remember { mutableStateOf(TextFieldValue()) }
-    val lazyPagingRepositories =
-        viewModel.repositories.observeAsState().value?.collectAsLazyPagingItems()
+    val lazyPagingRepositories = viewModel.uiState.repositories?.collectAsLazyPagingItems()
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -66,7 +61,8 @@ fun SearchScreen(viewModel: GithubManagerViewModel) = Column {
                         lazyPagingRepositories.loadState.append is LoadState.Loading
             ),
             onRefresh = {
-                viewModel.getRepositories(searchText.value.text)
+                if (searchText.value.text.isNotBlank())
+                    viewModel.getRepositories(searchText.value.text)
             }
         ) {
             LazyColumn(Modifier.fillMaxSize(), listState) {

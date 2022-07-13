@@ -32,8 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchScreen(viewModel: GithubManagerViewModel, navController: NavController) = Column {
     val searchText = remember { mutableStateOf(TextFieldValue()) }
-    val lazyPagingRepositories =
-        viewModel.repositories.observeAsState().value?.collectAsLazyPagingItems()
+    val uiState = viewModel.uiState
+    val lazyPagingRepositories = uiState.repositories?.collectAsLazyPagingItems()
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -66,7 +66,8 @@ fun SearchScreen(viewModel: GithubManagerViewModel, navController: NavController
                         lazyPagingRepositories.loadState.append is LoadState.Loading
             ),
             onRefresh = {
-                viewModel.getRepositories(searchText.value.text)
+                if (searchText.value.text.isNotBlank())
+                    viewModel.getRepositories(searchText.value.text)
             }
         ) {
             LazyColumn(Modifier.fillMaxSize(), listState) {

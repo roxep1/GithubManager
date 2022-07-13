@@ -33,17 +33,17 @@ import com.bashkir.githubmanager.ui.theme.titleText
 
 @Composable
 fun OwnerScreen(viewModel: GithubManagerViewModel, navController: NavController) {
-    val user = viewModel.userState.collectAsState()
+    val user = viewModel.uiState.user
 
     IconButton(onClick = { navController.popBackStack() }) {
         Icon(Icons.Filled.ArrowBack, "Back button")
     }
 
-    when (user.value) {
+    when (user) {
         is UserState.Loading -> Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
-        is UserState.Success -> UserScreen((user.value as UserState.Success).user)
+        is UserState.Success -> UserScreen(user.user)
 
         else -> Box(Modifier.fillMaxSize()) {
             Text("Произошла ошибка при получении аккаунта :(", Modifier.align(Alignment.Center))
