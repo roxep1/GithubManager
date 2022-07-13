@@ -1,6 +1,5 @@
 package com.bashkir.githubmanager.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -15,15 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.bashkir.githubmanager.base.navigate
 import com.bashkir.githubmanager.data.GithubManagerViewModel
-import com.bashkir.githubmanager.data.models.Repository
 import com.bashkir.githubmanager.ui.Screen
 import com.bashkir.githubmanager.ui.components.RepositoryCard
 import com.bashkir.githubmanager.ui.components.RepositoryCardPlaceholder
@@ -31,14 +27,13 @@ import com.bashkir.githubmanager.ui.components.SearchTextField
 import com.bashkir.githubmanager.ui.theme.normalPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen(viewModel: GithubManagerViewModel, navController: NavController) = Column {
     val searchText = remember { mutableStateOf(TextFieldValue()) }
-    val flowOfPagingData = viewModel.repositories.observeAsState()
-    val lazyPagingRepositories = flowOfPagingData.value?.collectAsLazyPagingItems()
+    val lazyPagingRepositories =
+        viewModel.repositories.observeAsState().value?.collectAsLazyPagingItems()
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()

@@ -30,13 +30,13 @@ import java.time.LocalDateTime
 
 
 @Composable
-fun RepositoryCard(repository: Repository, onClick: () -> Unit) =
+fun RepositoryCard(repository: Repository, onClick: (() -> Unit)? = null) =
     Card(
         Modifier
             .fillMaxWidth()
             .padding(top = normalPadding)
             .padding(horizontal = smallPadding)
-            .clickable(onClick = onClick),
+            .clickable(enabled = onClick != null, onClick = onClick ?: {}),
         RoundedCornerShape(10.dp),
         elevation = normalElevation
     ) {
